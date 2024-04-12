@@ -31,12 +31,13 @@ public class AuthService {
     private final JwtUtils jwtUtils;
 
     public String register(Register register) {
-        var user = Users.builder()
+        Users user = Users.builder()
                 .userName(register.getName())
                 .email(register.getEmail())
                 .password(passwordEncoder.encode(register.getPassword()))
                 .number(register.getNumber())
                 .role(ERole.USER).build();
+
         userRepository.save(user);
         return "User Added Successfully";
     }
@@ -56,13 +57,13 @@ public class AuthService {
 
     public ResponseEntity<Users> update(int id, String role) {
         Users user = userRepository.findById(id).get();
-        if (role.equals("DEVLOPER")) {
-            user.setRole(ERole.DEVLOPER);
-        }
-        if (role.equals("ADMIN")) {
+        if (role.equals("DEVELOPER")) {
+            user.setRole(ERole.DEVELOPER);
+        }else if (role.equals("ADMIN")) {
             user.setRole(ERole.ADMIN);
+        }else{
+            user.setRole(ERole.USER);
         }
-        user.setRole(ERole.USER);
         return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(user));
     }
 }
